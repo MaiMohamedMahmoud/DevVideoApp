@@ -15,3 +15,9 @@
  */
 
 package com.example.android.devbyteviewer.repository
+
+import com.example.android.devbyteviewer.database.databaseVideo
+
+class VideosRepository(private val database: databaseVideo) {
+
+}
