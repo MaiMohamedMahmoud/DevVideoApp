@@ -31,7 +31,7 @@ import retrofit2.http.GET
  */
 interface DevbyteService {
     @GET("devbytes")
-    suspend fun getPlaylist(): NetworkVideoContainer
+    suspend fun getPlaylist(): Deferred<NetworkVideoContainer>
 }
 
 /**
@@ -45,5 +45,6 @@ object DevByteNetwork {
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
 
+    //this is the value we will use in the repo
     val devbytes = retrofit.create(DevbyteService::class.java)
 }

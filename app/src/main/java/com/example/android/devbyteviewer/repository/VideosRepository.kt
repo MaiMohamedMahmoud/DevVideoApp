@@ -16,8 +16,39 @@
 
 package com.example.android.devbyteviewer.repository
 
-import com.example.android.devbyteviewer.database.databaseVideo
 
-class VideosRepository(private val database: databaseVideo) {
+import android.provider.MediaStore
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import com.example.android.devbyteviewer.database.VideoDatabase
+import com.example.android.devbyteviewer.database.asDomainModel
+import com.example.android.devbyteviewer.database.databaseVideo
+import com.example.android.devbyteviewer.domain.DevByteVideo
+import com.example.android.devbyteviewer.network.DevByteNetwork.devbytes
+import com.example.android.devbyteviewer.network.asDatabaseModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+class VideosRepository(private val database: VideoDatabase) {
+    /**
+     * this can be used by everyone to observe videos
+     */
+
+    val videos:LiveData<List<DevByteVideo>> = Transformations.map( database.dao.getVideos()){
+        it.asDomainModel()
+    }
+    /**
+     * here in this repository we want we want
+     * 1- fun to update (refresh) the db cash
+     * 2- fun get data from cash db.
+     */
+    suspend fun refreshDatabase() {
+        //get the data from network (API)
+        withContext(Dispatchers.IO) {
+            val videoList = devbytes.getPlaylist().await()
+            database.dao.insertAll(*videoList.asDatabaseModel())
+        }
+
+    }
 
 }

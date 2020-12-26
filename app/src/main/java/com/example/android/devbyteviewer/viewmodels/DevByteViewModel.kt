@@ -97,7 +97,7 @@ class DevByteViewModel(application: Application) : AndroidViewModel(application)
 
         try {
              val playlist = DevByteNetwork.devbytes.getPlaylist()
-            _playlist.postValue(playlist.asDomainModel())
+            _playlist.postValue(playlist.await().asDomainModel())
 
             _eventNetworkError.value = false
             _isNetworkErrorShown.value = false

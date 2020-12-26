@@ -11,8 +11,8 @@ import androidx.room.Query
 interface DAO {
 
     @Query("SELECT * FROM databaseVideo")
-    suspend fun getVideos(): LiveData<List<databaseVideo>>
-    
+    fun getVideos(): LiveData<List<databaseVideo>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(video: databaseVideo)
+    suspend fun insertAll(vararg video: databaseVideo)
 }
