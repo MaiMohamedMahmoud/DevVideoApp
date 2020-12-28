@@ -23,9 +23,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.android.devbyteviewer.database.VideoDatabase
+import com.example.android.devbyteviewer.database.getInstance
 import com.example.android.devbyteviewer.domain.DevByteVideo
 import com.example.android.devbyteviewer.network.DevByteNetwork
 import com.example.android.devbyteviewer.network.asDomainModel
+import com.example.android.devbyteviewer.repository.VideosRepository
 import kotlinx.coroutines.*
 import java.io.IOException
 
@@ -53,7 +56,6 @@ class DevByteViewModel(application: Application) : AndroidViewModel(application)
      */
     val playlist: LiveData<List<DevByteVideo>>
         get() = _playlist
-
 
 
     /**
@@ -89,6 +91,15 @@ class DevByteViewModel(application: Application) : AndroidViewModel(application)
         refreshDataFromNetwork()
     }
 
+    private fun getData() = viewModelScope.launch {
+        try {
+            //  val database = getDatabase
+            //  VideosRepository( )
+        } catch (error: IOException) {
+
+        }
+    }
+
     /**
      * Refresh data from network and pass it via LiveData. Use a coroutine launch to get to
      * background thread.
@@ -96,8 +107,10 @@ class DevByteViewModel(application: Application) : AndroidViewModel(application)
     private fun refreshDataFromNetwork() = viewModelScope.launch {
 
         try {
-             val playlist = DevByteNetwork.devbytes.getPlaylist()
-            _playlist.postValue(playlist.await().asDomainModel())
+            //get data from network..
+            val playlist = DevByteNetwork.devbytes.getPlaylist()
+
+            _playlist.postValue(playlist.asDomainModel())
 
             _eventNetworkError.value = false
             _isNetworkErrorShown.value = false
