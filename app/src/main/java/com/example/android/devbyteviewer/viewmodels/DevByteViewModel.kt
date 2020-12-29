@@ -44,6 +44,7 @@ import java.io.IOException
  */
 class DevByteViewModel(application: Application) : AndroidViewModel(application) {
 
+
     /**
      * A playlist of videos that can be shown on the screen. This is private to avoid exposing a
      * way to set this value to observers.
@@ -54,8 +55,6 @@ class DevByteViewModel(application: Application) : AndroidViewModel(application)
      * A playlist of videos that can be shown on the screen. Views should use this to get access
      * to the data.
      */
-    val playlist: LiveData<List<DevByteVideo>>
-        get() = _playlist
 
 
     /**
@@ -84,19 +83,21 @@ class DevByteViewModel(application: Application) : AndroidViewModel(application)
     val isNetworkErrorShown: LiveData<Boolean>
         get() = _isNetworkErrorShown
 
+    val database = getInstance(application)
+    val videosRepository = VideosRepository(database)
+
     /**
      * init{} is called immediately when this ViewModel is created.
      */
     init {
-        refreshDataFromNetwork()
+        //refreshDataFromNetwork()
+        refreshDataNetwork()
     }
 
-    private fun getData() = viewModelScope.launch {
-        try {
-            //  val database = getDatabase
-            //  VideosRepository( )
-        } catch (error: IOException) {
-
+    val playlist = videosRepository.videos
+    private fun refreshDataNetwork() {
+        viewModelScope.launch {
+            videosRepository.refreshDatabase()
         }
     }
 
